@@ -1,0 +1,9 @@
+class UpdateUnmaterializedInvoiceRowsToVersion12 < ActiveRecord::Migration[5.2]
+  def change
+    update_view :unmaterialized_invoice_rows, version: 12, revert_to_version: 11
+
+    execute <<-SQL
+      SELECT refresh_all_materialized_invoice_rows();
+    SQL
+  end
+end

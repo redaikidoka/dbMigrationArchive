@@ -1,0 +1,29 @@
+class SpeedQueriesNPlus1 < ActiveRecord::Migration[5.2]
+  def up
+    execute <<-SQL
+      create index IF NOT EXISTS index_cases_unmaterialized_case_rows
+        on cases (account_id, id, requesting_attorney_id, user_to_contact_id);
+    SQL
+
+    execute <<-SQL
+      CREATE INDEX IF NOT EXISTS index_invoices_unmaterialized_invoice_Rows
+      ON invoices(id, parent_id, parent_type, entity_id);
+
+      CREATE INDEX IF NOT EXISTS index_parties_order_id_type
+      ON parties (order_id, type);
+    SQL
+
+  end
+
+  def down
+    execute <<-SQL
+      DROP INDEX IF EXISTS index_cases_unmaterialized_case_rows ;
+    SQL
+
+    execute <<-SQL
+      DROP INDEX IF EXISTS index_invoice_unmaterialized_invoice_Rows ;
+      DROP INDEX IF EXISTS index_parties_order_id_type;
+    SQL
+
+  end
+end
